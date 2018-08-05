@@ -19,11 +19,23 @@ class tetrimino {
 		this.moveLeft = false;
 	}
 
+	move() {
+		if (keyIsDown(LEFT_ARROW)) {
+			this.moveLeft = true;
+		}
+		if (keyIsDown(RIGHT_ARROW)) {
+			this.moveRight = true;
+		}
+	}
+	toGrid() {
+		clearLines();
+	}
+
 }
 
 class OBlock extends tetrimino {
 	constructor(x, y) {
-		super(x, y, 7);
+		super(x, y, 4);
 		this.color = COLORS[this.type];
 	}
 	draw() {
@@ -51,13 +63,7 @@ class OBlock extends tetrimino {
 		return true
 	}
 	move() {
-		if (keyIsDown(LEFT_ARROW)) {
-			this.moveLeft = true;
-		}
-		if (keyIsDown(RIGHT_ARROW)) {
-			this.moveRight = true;
-		}
-
+		super.move();
 		if (frameCount % 7 == 0) {
 			if (this.moveLeft) {
 				this.moveLeft = false;
@@ -82,5 +88,7 @@ class OBlock extends tetrimino {
 		grid[this.x + 1][this.y] = this.type;
 		grid[this.x][this.y + 1] = this.type;
 		grid[this.x + 1][this.y + 1] = this.type;
+
+		super.toGrid();
 	}
 }

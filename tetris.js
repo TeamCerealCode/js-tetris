@@ -5,6 +5,7 @@ const gHeight = 22; // grid height
 const tSize = 20; // tile size
 var startX;
 var startY;
+let debugMode = false;
 
 function setup() {
 	createCanvas(500, 500);
@@ -48,7 +49,7 @@ function drawGrid() {
 			var type = grid[i][j];
 			if (type != 0) {
 				fill(COLORS[type]);
-				rect(i*tSize+startX,j*tSize+startY,tSize,tSize);
+				rect(i * tSize + startX, j * tSize + startY, tSize, tSize);
 			}
 		}
 	}
@@ -56,4 +57,35 @@ function drawGrid() {
 	noFill();
 	stroke(150);
 	rect(startX, startY, gWidth * tSize, gHeight * tSize);
+
+	if (debugMode) {
+		debugMouse();
+	}
+}
+
+function clearLines() {
+	for (let i = 0; i < gHeight; i++) {
+		let row = grid.map(x => x[i]);
+		if (row.every(x => x != 0)) {
+			movedown(i);
+		}
+	}
+}
+
+function movedown(h) {
+	for (let i = h - 1; i >= 0; i--) {
+		for (let j = 0; j < gWidth; j++) {
+			grid[j][i + 1] = grid[j][i];
+		}
+	}
+}
+
+function debugMouse() {
+	if (mouseIsPressed) {
+		var gMouseX = int((mouseX - startX) / tSize);
+		var gMouseY = int((mouseY - startY) / tSize);
+		if (gMouseX < 0 || gMouseX > gWidth - 1 || gMouseY < 0 || gMouseY > gHeight - 1)
+			return
+		grid[gMouseX][gMouseY] = 8;
+	}
 }
