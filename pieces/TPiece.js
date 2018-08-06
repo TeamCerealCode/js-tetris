@@ -13,7 +13,7 @@ class TPiece extends tetrimino {
 			this.toGrid();
 			return false
 		}
-		if (grid[this.x][this.y + 2] != 0 || grid[this.x + 1][this.y + 2] != 0) {
+		if (grid[this.y + 2][this.x] != 0 || grid[this.y + 2][this.x + 1] != 0) {
 			this.toGrid();
 			return false
 		}
@@ -28,14 +28,14 @@ class TPiece extends tetrimino {
 			if (this.moveLeft) {
 				this.moveLeft = false;
 				if (this.x != 0) {
-					if (grid[this.x - 1][this.y + 1] == 0 && grid[this.x][this.y] == 0)
+					if (grid[this.y + 1][this.x - 1] == 0 && grid[this.y][this.x] == 0)
 						this.x--;
 				}
 			}
 			if (this.moveRight) {
 				this.moveRight = false;
 				if (this.x != gWidth - 3) {
-					if (grid[this.x + 2][this.y] == 0 && grid[this.x + 2][this.y + 1] == 0)
+					if (grid[this.y][this.x + 2] == 0 && grid[this.y + 1][this.x + 2] == 0)
 						this.x++;
 				}
 			}
@@ -46,8 +46,8 @@ class TPiece extends tetrimino {
 	toGrid() {
 		for (let i = 0; i < this.size; i++) {
 			for (let j = 0; j < this.size; j++) {
-				if (this.grid[i][j] != 0) {
-					grid[this.x+j][this.y+i] = this.type;
+				if (this.grid[j][i] != 0) {
+					grid[this.y+i][this.x+j] = this.type;
 				}
 			}
 		}

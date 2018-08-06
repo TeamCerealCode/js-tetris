@@ -17,12 +17,12 @@ function setup() {
 	startY = (height / 2) - (gHeight * tSize / 2);
 
 	grid = [];
-	for (let i = 0; i < gWidth; i++) {
-		var column = [];
-		for (let j = 0; j < gHeight; j++) {
-			column.push(0);
+	for (let j = 0; j < gHeight; j++) {
+		var row = [];
+		for (let i = 0; i < gWidth; i++) {
+			row.push(0);
 		}
-		grid.push(column);
+		grid.push(row);
 	}
 }
 
@@ -55,9 +55,9 @@ function drawGrid() {
 
 	noStroke();
 	fill(200);
-	for (let i = 0; i < gWidth; i++) {
 		for (let j = 0; j < gHeight; j++) {
-			var type = grid[i][j];
+	for (let i = 0; i < gWidth; i++) {
+			var type = grid[j][i];
 			if (type != 0) {
 				fill(COLORS[type]);
 				rect(i * tSize + startX, j * tSize + startY, tSize, tSize);
@@ -76,7 +76,7 @@ function drawGrid() {
 
 function clearLines() {
 	for (let i = 0; i < gHeight; i++) {
-		let row = grid.map(x => x[i]);
+		let row = grid[i];
 		if (row.every(x => x != 0)) {
 			movedown(i);
 		}
@@ -85,12 +85,10 @@ function clearLines() {
 
 function movedown(h) {
 	for (let i = h - 1; i >= 0; i--) {
-		for (let j = 0; j < gWidth; j++) {
-			grid[j][i + 1] = grid[j][i];
-		}
+		grid[i + 1] = grid[i];
 	}
 	for (let j = 0; j < gWidth; j++) {
-		grid[j][0] = 0;
+		grid[0][j] = 0;
 	}
 }
 
@@ -123,6 +121,6 @@ function debugMouse() {
 		var gMouseY = int((mouseY - startY) / tSize);
 		if (gMouseX < 0 || gMouseX > gWidth - 1 || gMouseY < 0 || gMouseY > gHeight - 1)
 			return
-		grid[gMouseX][gMouseY] = debugColor;
+		grid[gMouseY][gMouseX] = debugColor;
 	}
 }

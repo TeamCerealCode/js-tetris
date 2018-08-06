@@ -31,7 +31,7 @@ class OPiece extends tetrimino {
 		if (y + 2 >= gHeight) {
 			return true
 		}
-		if (grid[this.x][y + 2] != 0 || grid[this.x + 1][y + 2] != 0) {
+		if (grid[y + 2][this.x] != 0 || grid[y + 2][this.x + 1] != 0) {
 			return true
 		}
 		return false
@@ -42,14 +42,14 @@ class OPiece extends tetrimino {
 			if (this.moveLeft) {
 				this.moveLeft = false;
 				if (this.x != 0) {
-					if (grid[this.x - 1][this.y] == 0 && grid[this.x - 1][this.y + 1] == 0)
+					if (grid[this.y][this.x - 1] == 0 && grid[this.y + 1][this.x - 1] == 0)
 						this.x--;
 				}
 			}
 			if (this.moveRight) {
 				this.moveRight = false;
 				if (this.x != gWidth - 2) {
-					if (grid[this.x + 2][this.y] == 0 && grid[this.x + 2][this.y + 1] == 0)
+					if (grid[this.y][this.x + 2] == 0 && grid[this.y + 1][this.x + 2] == 0)
 						this.x++;
 				}
 			}
@@ -58,10 +58,10 @@ class OPiece extends tetrimino {
 	}
 
 	toGrid() {
-		grid[this.x][this.y] = this.type;
-		grid[this.x + 1][this.y] = this.type;
-		grid[this.x][this.y + 1] = this.type;
-		grid[this.x + 1][this.y + 1] = this.type;
+		grid[this.y][this.x] = this.type;
+		grid[this.y][this.x + 1] = this.type;
+		grid[this.y + 1][this.x] = this.type;
+		grid[this.y + 1][this.x + 1] = this.type;
 
 		super.toGrid();
 	}
