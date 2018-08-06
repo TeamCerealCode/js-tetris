@@ -60,13 +60,14 @@ class tetrimino {
 		return true
 	}
 	harddrop() {
-		for (let y = this.y; y < gHeight; y++) {
+		for (let y = this.y; y <= gHeight; y++) {
 			if (this.collide(y)) {
 				this.y = y;
 				this.toGrid();
-				return
+				return true
 			}
 		}
+		return false
 	}
 
 }

@@ -8,6 +8,7 @@ var startY;
 let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
+let upArrow = false;
 
 function setup() {
 	createCanvas(500, 500);
@@ -41,6 +42,8 @@ function keyPressed() {
 		debugMode = !debugMode;
 	if (keyCode == 190)
 		frozen = !frozen;
+	if (keyCode == UP_ARROW)
+		upArrow = true;
 }
 
 function drawGrid() {

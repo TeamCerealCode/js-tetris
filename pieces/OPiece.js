@@ -16,6 +16,10 @@ class OPiece extends tetrimino {
 	}
 	update() {
 		this.move();
+		if (upArrow){
+			upArrow = false;
+			return !super.harddrop();
+		}
 		if (this.collide()) {
 			this.toGrid();
 			return false
