@@ -5,11 +5,14 @@ const gHeight = 22; // grid height
 const tSize = 20; // tile size
 var startX;
 var startY;
-let debugMode = false;
+let debugMode = true;
+let frozen = debugMode;
+let debugColor = 8;
 
 function setup() {
 	createCanvas(500, 500);
-	block = new OBlock(3, 0);
+	block = new OPiece(int(gWidth / 2) - 1, 0);
+	//block = new TPiece(int(gWidth / 2) - 1, 0);
 	startX = (width / 2) - (gWidth * tSize / 2);
 	startY = (height / 2) - (gHeight * tSize / 2);
 
@@ -28,8 +31,16 @@ function draw() {
 	drawGrid();
 	block.draw();
 	if (block.update() == false) {
-		block = new OBlock(3, 0);
+		block = new OPiece(int(gWidth / 2) - 1, 0);
+		//block = new TPiece(int(gWidth / 2) - 1, 0);
 	}
+}
+
+function keyPressed() {
+	if (keyCode == 188)
+		debugMode = !debugMode;
+	if (keyCode == 190)
+		frozen = !frozen;
 }
 
 function drawGrid() {
@@ -78,14 +89,40 @@ function movedown(h) {
 			grid[j][i + 1] = grid[j][i];
 		}
 	}
+	for (let j = 0; j < gWidth; j++) {
+		grid[j][0] = 0;
+	}
 }
 
 function debugMouse() {
+	noStroke();
+	let y = 5;
+	let s = 50;
+	for (let col in COLORS) {
+		fill(COLORS[col]);
+		rect(5, y, s, s);
+		y += s + 5;
+	}
+	noFill();
+	stroke(255, 0, 0);
+	rect(5, y, s, s);
+
 	if (mouseIsPressed) {
+		y = 5;
+		let len = Object.keys(COLORS).length;
+		for (let i = 1; i <= len + 1; i++) {
+			if (mouseX > 5 && mouseX < s + 5 && mouseY > y && mouseY < y + s) {
+				debugColor = i
+				return
+			}
+			y += s + 5;
+		}
+		debugColor %= len + 1
+
 		var gMouseX = int((mouseX - startX) / tSize);
 		var gMouseY = int((mouseY - startY) / tSize);
 		if (gMouseX < 0 || gMouseX > gWidth - 1 || gMouseY < 0 || gMouseY > gHeight - 1)
 			return
-		grid[gMouseX][gMouseY] = 8;
+		grid[gMouseX][gMouseY] = debugColor;
 	}
 }

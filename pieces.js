@@ -6,17 +6,43 @@ const COLORS = {
 	5: "#59B101", // SPiece
 	6: "#D70F37", // ZPiece
 	7: "#AF298A", // TPiece
-	8: "#c8c8c8"  // Garbage blocks
+	8: "#c8c8c8" // Garbage blocks
 
 }
 
 class tetrimino {
-	constructor(x, y, type = 8) {
+	constructor(x, y, type = 8, size = 3) {
 		this.x = x;
 		this.y = y;
 		this.type = type;
 		this.moveRight = false;
 		this.moveLeft = false;
+		this.upArrow = false;
+		this.grid = [];
+		this.size = size;
+		for (let i = 0; i < size; i++) {
+			let row = []
+			for (let j = 0; j < size; j++) {
+				row.push(0);
+			}
+			this.grid.push(row);
+		}
+	}
+
+	draw() {
+		push();
+
+		noStroke();
+		fill(this.color);
+		for (let i = 0; i < this.size; i++) {
+			for (let j = 0; j < this.size; j++) {
+				if (this.grid[i][j] != 0) {
+					rect((this.x + j) * tSize + startX, (this.y + i) * tSize + startY, tSize, tSize);
+				}
+			}
+		}
+
+		pop();
 	}
 
 	move() {
@@ -30,65 +56,17 @@ class tetrimino {
 	toGrid() {
 		clearLines();
 	}
-
-}
-
-class OBlock extends tetrimino {
-	constructor(x, y) {
-		super(x, y, 4);
-		this.color = COLORS[this.type];
-	}
-	draw() {
-		push();
-
-		noStroke();
-		fill(this.color);
-		rect(this.x * tSize + startX, this.y * tSize + startY, tSize * 2, tSize * 2);
-
-		pop();
-	}
-	update() {
-		this.move();
-		if (this.y + 2 >= gHeight) {
-			this.toGrid();
-			return false
-		}
-		if (grid[this.x][this.y + 2] != 0 || grid[this.x + 1][this.y + 2] != 0) {
-			this.toGrid();
-			return false
-		}
-		if (frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 5 : 30) == 0) {
-			this.y++;
-		}
+	rotate() {
 		return true
 	}
-	move() {
-		super.move();
-		if (frameCount % 7 == 0) {
-			if (this.moveLeft) {
-				this.moveLeft = false;
-				if (this.x != 0) {
-					if (grid[this.x - 1][this.y] == 0 && grid[this.x - 1][this.y + 1] == 0)
-						this.x--;
-				}
-			}
-			if (this.moveRight) {
-				this.moveRight = false;
-				if (this.x != gWidth - 2) {
-					if (grid[this.x + 2][this.y] == 0 && grid[this.x + 2][this.y + 1] == 0)
-						this.x++;
-				}
+	harddrop() {
+		for (let y = this.y; y < gHeight; y++) {
+			if (this.collide(y)) {
+				this.y = y;
+				this.toGrid();
+				return
 			}
 		}
-
 	}
 
-	toGrid() {
-		grid[this.x][this.y] = this.type;
-		grid[this.x + 1][this.y] = this.type;
-		grid[this.x][this.y + 1] = this.type;
-		grid[this.x + 1][this.y + 1] = this.type;
-
-		super.toGrid();
-	}
 }
