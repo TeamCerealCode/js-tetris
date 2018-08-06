@@ -10,10 +10,14 @@ let frozen = debugMode;
 let debugColor = 8;
 let upArrow = false;
 
+function newPiece() {
+	block = new OPiece(int(gWidth / 2) - 1, 0);
+	//block = new TPiece(int(gWidth / 2) - 1, 0); 
+}
+
 function setup() {
 	createCanvas(500, 500);
-	block = new OPiece(int(gWidth / 2) - 1, 0);
-	//block = new TPiece(int(gWidth / 2) - 1, 0);
+	newPiece();
 	startX = (width / 2) - (gWidth * tSize / 2);
 	startY = (height / 2) - (gHeight * tSize / 2);
 
@@ -32,8 +36,7 @@ function draw() {
 	drawGrid();
 	block.draw();
 	if (block.update() == false) {
-		block = new OPiece(int(gWidth / 2) - 1, 0);
-		//block = new TPiece(int(gWidth / 2) - 1, 0);
+		newPiece();
 	}
 }
 
@@ -87,8 +90,8 @@ function clearLines() {
 }
 
 function movedown(h) {
-	for (let i = h - 1; i >= 0; i--) {
-		grid[i + 1] = grid[i];
+	for (let i = h - 1; i > 0; i--) {
+		grid[i + 1] = grid[i].slice();
 	}
 	for (let j = 0; j < gWidth; j++) {
 		grid[0][j] = 0;

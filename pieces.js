@@ -15,8 +15,7 @@ class tetrimino {
 		this.x = x;
 		this.y = y;
 		this.type = type;
-		this.moveRight = false;
-		this.moveLeft = false;
+		this.color = COLORS[this.type];
 		this.upArrow = false;
 		this.grid = [];
 		this.size = size;
@@ -46,16 +45,63 @@ class tetrimino {
 	}
 
 	move() {
-		if (keyIsDown(LEFT_ARROW)) {
-			this.moveLeft = true;
-		}
+		var reverse = false;
+		var inc = -1; // increment
+		var sX = 0;
 		if (keyIsDown(RIGHT_ARROW)) {
-			this.moveRight = true;
+			reverse = true;
+			inc = 1;
+			sX = this.size - 1;
+		}
+
+		if (keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)) {
+			let y = 0;
+			for (let row_ of this.grid) {
+				let x = sX;
+				let row = reverse ? row_.slice().reverse() : row_;
+				for (let g of row) {
+					if (g != 0) {
+						if (grid[this.y + y][this.x + x + inc] == 0) {
+							break
+						} else {
+							return
+						}
+					}
+					x += inc * -1;
+				}
+				y++;
+			}
+			this.x += inc;
 		}
 	}
 	toGrid() {
+		for (let j = 0; j < this.size; j++) {
+			for (let i = 0; i < this.size; i++) {
+				if (this.grid[j][i] != 0) {
+					grid[this.y + j][this.x + i] = this.type;
+				}
+			}
+		}
 		clearLines();
 	}
+
+	collide(yOff = this.y) {
+		let y = 0;
+		for (let row of this.grid) {
+			let x = 0;
+			for (let g of row) {
+				if (g != 0) {
+					if (yOff + y + 1 >= gHeight || grid[yOff + y + 1][this.x + x] != 0) {
+						return true
+					}
+				}
+				x++;
+			}
+			y++;
+		}
+	}
+
+
 	rotate() {
 		return true
 	}
