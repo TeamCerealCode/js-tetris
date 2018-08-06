@@ -5,7 +5,7 @@ const gHeight = 22; // grid height
 const tSize = 20; // tile size
 var startX;
 var startY;
-let debugMode = true;
+let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
 
