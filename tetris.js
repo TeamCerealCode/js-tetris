@@ -5,14 +5,21 @@ const gHeight = 22; // grid height
 const tSize = 20; // tile size
 var startX;
 var startY;
+
+var hold = 0;
 let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
 let upArrow = false;
 
-function newPiece() {
-	block = new OPiece(int(gWidth / 2) - 1, 0);
-	//block = new TPiece(int(gWidth / 2) - 1, 0); 
+function newPiece(t = 0) {
+	var piece;
+	if (t == 0) {
+		piece = getPiece(floor(random(1,8)));
+	} else {
+		piece = getPiece(t);
+	}
+	block = new piece(int(gWidth / 2) - 2, 0);
 }
 
 function setup() {
@@ -47,6 +54,16 @@ function keyPressed() {
 		frozen = !frozen;
 	if (keyCode == UP_ARROW)
 		upArrow = true;
+	if (keyCode == 88)
+		block.rotate();
+	if (keyCode == 32) {
+		var t = block.type;
+		if (hold != 0) 
+			newPiece(hold);
+		else
+			newPiece();
+		hold = t;
+	}
 }
 
 function drawGrid() {
@@ -61,8 +78,8 @@ function drawGrid() {
 
 	noStroke();
 	fill(200);
-		for (let j = 0; j < gHeight; j++) {
-	for (let i = 0; i < gWidth; i++) {
+	for (let j = 0; j < gHeight; j++) {
+		for (let i = 0; i < gWidth; i++) {
 			var type = grid[j][i];
 			if (type != 0) {
 				fill(COLORS[type]);
