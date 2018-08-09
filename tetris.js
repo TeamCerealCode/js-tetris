@@ -7,24 +7,52 @@ var startX;
 var startY;
 
 var hold = 0;
+var upcoming = [];
+var bag = [];
 let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
 let upArrow = false;
 
-function newPiece(t = 0) {
+function shuffleArray(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+}
+
+function newBag() {
+	let pieces = [1,2,3,4,5,6,7];
+	shuffleArray(pieces);
+	bag = pieces;
+}
+
+function newPiece(hld) {
 	var piece;
-	if (t == 0) {
-		piece = getPiece(floor(random(1,8)));
+	if (hld) {
+		if (hold == 0) {
+			piece = getPiece(getUpcoming());
+		} else {
+			piece = getPiece(hold);
+		}
 	} else {
-		piece = getPiece(t);
+		piece = getPiece(getUpcoming());
 	}
 	block = new piece(int(gWidth / 2) - 2, 0);
+}
+function newUpcoming() {
+	upcoming.push(bag.shift());
+	if (bag.length == 0) {
+		newBag();
+	}
+}
+function getUpcoming() {
+	newUpcoming();
+	return upcoming.shift();
 }
 
 function setup() {
 	createCanvas(500, 500);
-	newPiece();
 	startX = (width / 2) - (gWidth * tSize / 2);
 	startY = (height / 2) - (gHeight * tSize / 2);
 
@@ -36,6 +64,10 @@ function setup() {
 		}
 		grid.push(row);
 	}
+	newBag();
+	for (let i = 0; i < 5; i++)
+		newUpcoming();
+	newPiece();
 }
 
 function draw() {
@@ -45,6 +77,12 @@ function draw() {
 	if (block.update() == false) {
 		newPiece();
 	}
+	if (hold != 0) {
+		var c = getPiece(hold)
+		c = new c(0, 0)
+		c.draw(true, startX - ((c.size + 1) * tSize), startY);
+	}
+	drawUpcoming();
 }
 
 function keyPressed() {
@@ -56,14 +94,18 @@ function keyPressed() {
 		upArrow = true;
 	if (keyCode == 88)
 		block.rotate();
+	if (keyCode == 90)
+		block.rotate(false);
 	if (keyCode == 32) {
-		var t = block.type;
-		if (hold != 0) 
-			newPiece(hold);
-		else
-			newPiece();
+		var t = block.type
+		newPiece(true);
 		hold = t;
 	}
+}
+
+function pieceDropped() {
+	clearLines();
+
 }
 
 function drawGrid() {
@@ -94,6 +136,16 @@ function drawGrid() {
 
 	if (debugMode) {
 		debugMouse();
+	}
+}
+
+function drawUpcoming() {
+	let y = startY;
+	for (let i = 0; i < 5; i++) {
+		let cur = getPiece(upcoming[i]);
+		cur = new cur(0,0);
+		cur.draw(true, startX + (gWidth * tSize) + tSize, y);
+		y += cur.size * tSize;
 	}
 }
 

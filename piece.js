@@ -33,11 +33,11 @@ class tetrimino {
 	}
 
 	update() {
-		if (keyIsDown(LEFT_ARROW)) 
+		if (keyIsDown(LEFT_ARROW))
 			this.dasLeft++;
 		else
 			this.dasLeft = 0
-		if (keyIsDown(RIGHT_ARROW)) 
+		if (keyIsDown(RIGHT_ARROW))
 			this.dasRight++;
 		else
 			this.dasRight = 0
@@ -65,15 +65,19 @@ class tetrimino {
 		return true
 	}
 
-	draw() {
+	draw(out = false, x, y) {
 		push();
 
 		noStroke();
 		fill(this.color);
-		for (let i = 0; i < this.size; i++) {
-			for (let j = 0; j < this.size; j++) {
-				if (this.grid[i][j] != 0) {
-					rect((this.x + j) * tSize + startX, (this.y + i) * tSize + startY, tSize, tSize);
+		for (let j = 0; j < this.size; j++) {
+			for (let i = 0; i < this.size; i++) {
+				if (this.grid[j][i] != 0) {
+					if (out) {
+						rect(x + (i * tSize), y + (j * tSize), tSize, tSize);
+					} else {
+						rect((this.x + i) * tSize + startX, (this.y + j) * tSize + startY, tSize, tSize);
+					}
 				}
 			}
 		}
@@ -121,7 +125,7 @@ class tetrimino {
 				}
 			}
 		}
-		clearLines();
+		pieceDropped();
 	}
 
 	collide(yOff = this.y) {
@@ -142,7 +146,7 @@ class tetrimino {
 	}
 
 
-	rotate() {
+	rotate(cw = true) {
 		var newGrid = [];
 		for (let i = 0; i < this.size; i++) {
 			let row = []
@@ -153,7 +157,16 @@ class tetrimino {
 		}
 		for (let y = 0; y < this.size; y++) {
 			for (let x = 0; x < this.size; x++) {
-				newGrid[x][this.size - y - 1] = this.grid[y][x];
+				let newX;
+				let newY;
+				if (cw) {
+					newX = this.size - y - 1;
+					newY = x;
+				} else {
+					newX = y;
+					newY = this.size - x - 1;
+				}
+				newGrid[newY][newX] = this.grid[y][x];
 			}
 		}
 		this.grid = newGrid
