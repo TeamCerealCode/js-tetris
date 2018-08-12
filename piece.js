@@ -147,20 +147,20 @@ class tetrimino {
 	}
 
 	isInside(g = this.grid, xOff, yOff) {
-		// xOff += this.x;
-		// yOff += this.y;
-		// for (let y = 0; y < this.size; y++) {
-		// 	for (let x = 0; x < this.size; x++) {
-		// 		if (g[y][x] != 0) {
-		// 			if (xOff+x < 0 || xOff+x > gWidth || yOff+y >= gHeight) {
-		// 				return true
-		// 			}
-		// 			if (grid[yOff+y][xOff+x] != 0) {
-		// 				return true
-		// 			}
-		// 		}
-		// 	}
-		// }
+		xOff += this.x;
+		yOff += this.y;
+		for (let y = 0; y < this.size; y++) {
+			for (let x = 0; x < this.size; x++) {
+				if (g[y][x] != 0) {
+					if (xOff+x < 0 || xOff+x > gWidth || yOff+y >= gHeight) {
+						return true
+					}
+					if (grid[yOff+y][xOff+x] != 0) {
+						return true
+					}
+				}
+			}
+		}
 		return false
 	}
 
