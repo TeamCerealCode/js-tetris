@@ -73,6 +73,7 @@ function setup() {
 function draw() {
 	background(0);
 	drawGrid();
+
 	block.draw();
 	if (block.update() == false) {
 		newPiece();
@@ -105,7 +106,6 @@ function keyPressed() {
 
 function pieceDropped() {
 	clearLines();
-
 }
 
 function drawGrid() {
@@ -145,7 +145,9 @@ function drawUpcoming() {
 		let cur = getPiece(upcoming[i]);
 		cur = new cur(0,0);
 		cur.draw(true, startX + (gWidth * tSize) + tSize, y);
-		y += cur.size * tSize;
+		let s = cur.size;
+		s = s <= 2 ? 3 : s
+		y += s * tSize;
 	}
 }
 

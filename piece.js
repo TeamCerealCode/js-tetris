@@ -30,6 +30,7 @@ class tetrimino {
 		this.das = 10;
 		this.slideTimer = 0;
 		this.fall = true;
+		this.rotState = 0;
 	}
 
 	update() {
@@ -145,8 +146,27 @@ class tetrimino {
 		return false
 	}
 
+	isInside(g = this.grid, xOff, yOff) {
+		// xOff += this.x;
+		// yOff += this.y;
+		// for (let y = 0; y < this.size; y++) {
+		// 	for (let x = 0; x < this.size; x++) {
+		// 		if (g[y][x] != 0) {
+		// 			if (xOff+x < 0 || xOff+x > gWidth || yOff+y >= gHeight) {
+		// 				return true
+		// 			}
+		// 			if (grid[yOff+y][xOff+x] != 0) {
+		// 				return true
+		// 			}
+		// 		}
+		// 	}
+		// }
+		return false
+	}
 
 	rotate(cw = true) {
+		if (this.type == 4)
+			return true
 		var newGrid = [];
 		for (let i = 0; i < this.size; i++) {
 			let row = []
@@ -155,6 +175,17 @@ class tetrimino {
 			}
 			newGrid.push(row);
 		}
+
+		var rotS = () => this.rotState < 0 ? 3 : this.rotState%4;
+		var prevRot = this.rotState;
+		if (cw) {
+			this.rotState++;
+			this.rotState = rotS();
+		} else {
+			this.rotState--;
+			this.rotState = rotS();
+		}
+
 		for (let y = 0; y < this.size; y++) {
 			for (let x = 0; x < this.size; x++) {
 				let newX;
@@ -169,10 +200,44 @@ class tetrimino {
 				newGrid[newY][newX] = this.grid[y][x];
 			}
 		}
-		this.grid = newGrid
 
-		this.slideTimer = 0;
-		return true
+
+
+		/*
+		0 - default
+		1 - R (clockwise)
+		2 - 2 (180 rot)
+		3 - L (c-clockwise)
+		*/
+
+		// passed all 5 tests
+		var passed = false;
+		// we want to know the offset outside of the for loop
+		var off;
+
+		for (let test = 0; test < 5; test++) {
+			var j = int(lookup[prevRot].charAt(this.rotState));;
+			if (this.type == 1)
+				off = wallkickI[test][j];
+			else
+				off = wallkick[test][j];
+			if (!this.isInside(newGrid,off[0],off[1])) {
+				passed = true;
+				break;
+			}
+		}
+		
+
+		if (passed) {
+			this.grid = newGrid;
+			this.x += off[0];
+			this.y += off[1];
+			this.slideTimer = 0;
+		} else {
+			this.rotState = prevRot;
+		}
+
+		return passed;
 	}
 	harddrop() {
 		for (let y = this.y; y <= gHeight; y++) {
