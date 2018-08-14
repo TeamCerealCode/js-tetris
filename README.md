@@ -1,3 +1,3 @@
 # js-tetris
-epic code
-someday ill try to put it in a github page
+epic code\
+https://teamcerealcode.github.io/js-tetris/
