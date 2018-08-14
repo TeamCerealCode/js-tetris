@@ -13,6 +13,7 @@ let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
 let upArrow = false;
+let hasHeld = false
 
 function shuffleArray(array) {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -22,7 +23,7 @@ function shuffleArray(array) {
 }
 
 function newBag() {
-	let pieces = [1,2,3,4,5,6,7];
+	let pieces = [1, 2, 3, 4, 5, 6, 7];
 	shuffleArray(pieces);
 	bag = pieces;
 }
@@ -30,6 +31,7 @@ function newBag() {
 function newPiece(hld) {
 	var piece;
 	if (hld) {
+		hasHeld = true
 		if (hold == 0) {
 			piece = getPiece(getUpcoming());
 		} else {
@@ -40,12 +42,14 @@ function newPiece(hld) {
 	}
 	block = new piece(int(gWidth / 2) - 2, 0);
 }
+
 function newUpcoming() {
 	upcoming.push(bag.shift());
 	if (bag.length == 0) {
 		newBag();
 	}
 }
+
 function getUpcoming() {
 	newUpcoming();
 	return upcoming.shift();
@@ -75,6 +79,7 @@ function draw() {
 	drawGrid();
 
 	block.draw();
+	block.drawShadow();
 	if (block.update() == false) {
 		newPiece();
 	}
@@ -98,14 +103,17 @@ function keyPressed() {
 	if (keyCode == 90)
 		block.rotate(false);
 	if (keyCode == 32) {
-		var t = block.type
-		newPiece(true);
-		hold = t;
+		if (!hasHeld) {
+			var t = block.type
+			newPiece(true);
+			hold = t;
+		}
 	}
 }
 
 function pieceDropped() {
 	clearLines();
+	hasHeld = false;
 }
 
 function drawGrid() {
@@ -143,7 +151,7 @@ function drawUpcoming() {
 	let y = startY;
 	for (let i = 0; i < 5; i++) {
 		let cur = getPiece(upcoming[i]);
-		cur = new cur(0,0);
+		cur = new cur(0, 0);
 		cur.draw(true, startX + (gWidth * tSize) + tSize, y);
 		let s = cur.size;
 		s = s <= 2 ? 3 : s

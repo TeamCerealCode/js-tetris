@@ -28,6 +28,7 @@ class tetrimino {
 		this.dasLeft = 0;
 		this.dasRight = 0;
 		this.das = 10;
+		this.dasTimer = 2;
 		this.slideTimer = 0;
 		this.fall = true;
 		this.rotState = 0;
@@ -42,8 +43,13 @@ class tetrimino {
 			this.dasRight++;
 		else
 			this.dasRight = 0
-		if (this.dasRight == 1 || this.dasLeft == 1 || this.dasRight > this.das || this.dasLeft > this.das)
+		if (this.dasRight == 1 || this.dasLeft == 1)
 			this.move();
+
+		if (this.dasRight > this.das || this.dasLeft > this.das) {
+			for (let i = 0; i < this.dasTimer; i++)
+				this.move();
+		}
 		if (upArrow) {
 			upArrow = false;
 			return !this.harddrop();
@@ -79,6 +85,23 @@ class tetrimino {
 					} else {
 						rect((this.x + i) * tSize + startX, (this.y + j) * tSize + startY, tSize, tSize);
 					}
+				}
+			}
+		}
+
+		pop();
+	}
+
+	drawShadow() {
+		push();
+
+		noStroke();
+		fill(this.color+"80");
+		let yOff = this.harddrop(false);
+		for (let j = 0; j < this.size; j++) {
+			for (let i = 0; i < this.size; i++) {
+				if (this.grid[j][i] != 0) {
+					rect((this.x + i) * tSize + startX, (yOff + j) * tSize + startY, tSize, tSize);
 				}
 			}
 		}
@@ -152,10 +175,10 @@ class tetrimino {
 		for (let y = 0; y < this.size; y++) {
 			for (let x = 0; x < this.size; x++) {
 				if (g[y][x] != 0) {
-					if (xOff+x < 0 || xOff+x > gWidth || yOff+y >= gHeight) {
+					if (xOff + x < 0 || xOff + x > gWidth || yOff + y >= gHeight) {
 						return true
 					}
-					if (grid[yOff+y][xOff+x] != 0) {
+					if (grid[yOff + y][xOff + x] != 0) {
 						return true
 					}
 				}
@@ -176,7 +199,7 @@ class tetrimino {
 			newGrid.push(row);
 		}
 
-		var rotS = () => this.rotState < 0 ? 3 : this.rotState%4;
+		var rotS = () => this.rotState < 0 ? 3 : this.rotState % 4;
 		var prevRot = this.rotState;
 		if (cw) {
 			this.rotState++;
@@ -221,12 +244,12 @@ class tetrimino {
 				off = wallkickI[test][j];
 			else
 				off = wallkick[test][j];
-			if (!this.isInside(newGrid,off[0],off[1])) {
+			if (!this.isInside(newGrid, off[0], off[1])) {
 				passed = true;
 				break;
 			}
 		}
-		
+
 
 		if (passed) {
 			this.grid = newGrid;
@@ -239,15 +262,16 @@ class tetrimino {
 
 		return passed;
 	}
-	harddrop() {
+	harddrop(set = true) {
 		for (let y = this.y; y <= gHeight; y++) {
 			if (this.collide(y)) {
-				this.y = y;
-				this.toGrid();
-				return true
+				if (set) {
+					this.y = y;
+					this.toGrid();
+				}
+				return y
 			}
 		}
-		return false
 	}
 
 }
