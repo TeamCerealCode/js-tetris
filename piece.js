@@ -32,9 +32,15 @@ class tetrimino {
 		this.slideTimer = 0;
 		this.fall = true;
 		this.rotState = 0;
+		this.justSpawned = true;
 	}
 
 	update() {
+		if (this.justSpawned && this.isInside()){
+			lost = true;
+		} else {
+			this.justSpawned = false;
+		}
 		if (keyIsDown(LEFT_ARROW))
 			this.dasLeft++;
 		else
@@ -66,7 +72,7 @@ class tetrimino {
 				return false
 			}
 		}
-		if (!frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 5 : 30) == 0) {
+		if (!frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 2 : 30) == 0) {
 			this.y++;
 		}
 		return true
@@ -169,7 +175,7 @@ class tetrimino {
 		return false
 	}
 
-	isInside(g = this.grid, xOff, yOff) {
+	isInside(g = this.grid, xOff = 0, yOff = 0) {
 		xOff += this.x;
 		yOff += this.y;
 		for (let y = 0; y < this.size; y++) {

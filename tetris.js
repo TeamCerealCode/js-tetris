@@ -2,9 +2,10 @@ var block;
 var grid;
 const gWidth = 10; // grid width
 const gHeight = 22; // grid height
-const tSize = 20; // tile size
+let tSize = 15; // tile size
 var startX;
 var startY;
+
 
 var hold = 0;
 var upcoming = [];
@@ -13,7 +14,8 @@ let debugMode = false;
 let frozen = debugMode;
 let debugColor = 8;
 let upArrow = false;
-let hasHeld = false
+let hasHeld = false;
+let lost = false;
 
 function shuffleArray(array) {
 	for (let i = array.length - 1; i > 0; i--) {
@@ -89,6 +91,11 @@ function draw() {
 		c.draw(true, startX - ((c.size + 1) * tSize), startY);
 	}
 	drawUpcoming();
+
+
+	tSize = abs(sin(frameCount * 0.01) * 20);
+	startX = (width / 2) - (gWidth * tSize / 2);
+	startY = (height / 2) - (gHeight * tSize / 2);
 }
 
 function keyPressed() {
