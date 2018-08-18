@@ -33,10 +33,11 @@ class tetrimino {
 		this.fall = true;
 		this.rotState = 0;
 		this.justSpawned = true;
+		this.softDropTiles = 0;
 	}
 
 	update() {
-		if (this.justSpawned && this.isInside()){
+		if (this.justSpawned && this.isInside()) {
 			lost = true;
 		} else {
 			this.justSpawned = false;
@@ -72,7 +73,12 @@ class tetrimino {
 				return false
 			}
 		}
-		if (!frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 2 : 30) == 0) {
+		if (keyIsDown(DOWN_ARROW)) {
+			this.softDropTiles++;
+			if (this.softDropTiles < 20)
+				score++;
+		}
+		if (!frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 1 : 30) == 0) {
 			this.y++;
 		}
 		return true
@@ -102,7 +108,7 @@ class tetrimino {
 		push();
 
 		noStroke();
-		fill(this.color+"80");
+		fill(this.color + "80");
 		let yOff = this.harddrop(false);
 		for (let j = 0; j < this.size; j++) {
 			for (let i = 0; i < this.size; i++) {
@@ -269,6 +275,7 @@ class tetrimino {
 		return passed;
 	}
 	harddrop(set = true) {
+		let tiles = 0;
 		for (let y = this.y; y <= gHeight; y++) {
 			if (this.collide(y)) {
 				if (set) {
@@ -276,6 +283,12 @@ class tetrimino {
 					this.toGrid();
 				}
 				return y
+			}
+			if (set) {
+				if ((tiles/2) < 40) {
+					score += 2;
+				}
+				tiles++;
 			}
 		}
 	}

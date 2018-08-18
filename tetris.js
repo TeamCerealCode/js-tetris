@@ -2,9 +2,15 @@ var block;
 var grid;
 const gWidth = 10; // grid width
 const gHeight = 22; // grid height
-let tSize = 15; // tile size
+let tSize = 20; // tile size
 var startX;
 var startY;
+
+var level = 1;
+var score = 0;
+
+var backtoback;
+var combo = 0;
 
 
 var hold = 0;
@@ -91,11 +97,8 @@ function draw() {
 		c.draw(true, startX - ((c.size + 1) * tSize), startY);
 	}
 	drawUpcoming();
-
-
-	tSize = abs(sin(frameCount * 0.01) * 20);
-	startX = (width / 2) - (gWidth * tSize / 2);
-	startY = (height / 2) - (gHeight * tSize / 2);
+	fill(255);
+	text(score,30,height-30);
 }
 
 function keyPressed() {
@@ -119,7 +122,29 @@ function keyPressed() {
 }
 
 function pieceDropped() {
-	clearLines();
+	let linesC = clearLines();
+	if (linesC != 4)
+		backtoback = null;
+	if (linesC) {
+		combo++;
+		if (linesC == 1)
+			score += 100 * level;
+		else if (linesC == 2)
+			score += 300 * level;
+		else if (linesC == 3)
+			score += 500 * level;
+		else if (linesC == 4 && backtoback == "tetris")
+			score += 1200 * level;
+		else if (linesC == 4) {
+			score += 800 * level;
+			backtoback = "tetris";
+		}
+		if (combo > 1) {
+			score += 50 * combo * level;
+		}
+	} else {
+		combo = 0;
+	}
 	hasHeld = false;
 }
 
@@ -167,12 +192,15 @@ function drawUpcoming() {
 }
 
 function clearLines() {
+	let linesC = 0;
 	for (let i = 0; i < gHeight; i++) {
 		let row = grid[i];
 		if (row.every(x => x != 0)) {
+			linesC++;
 			movedown(i);
 		}
 	}
+	return linesC;
 }
 
 function movedown(h) {
