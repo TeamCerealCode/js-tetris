@@ -164,7 +164,10 @@ function drawGrid() {
 		for (let i = 0; i < gWidth; i++) {
 			var type = grid[j][i];
 			if (type != 0) {
-				fill(COLORS[type]);
+				if (!lost)
+					fill(COLORS[type]);
+				else
+					fill(COLORS[8]);
 				rect(i * tSize + startX, j * tSize + startY, tSize, tSize);
 			}
 		}
