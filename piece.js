@@ -38,7 +38,7 @@ class tetrimino {
 
 	update() {
 		if (this.justSpawned && this.isInside()) {
-			lost = true;
+			cMenu.lost = true;
 		} else {
 			this.justSpawned = false;
 		}
@@ -57,11 +57,11 @@ class tetrimino {
 			for (let i = 0; i < this.dasTimer; i++)
 				this.move();
 		}
-		if (upArrow) {
-			upArrow = false;
+		if (cMenu.upArrow) {
+			cMenu.upArrow = false;
 			return !this.harddrop();
 		}
-		if (!frozen) {
+		if (!cMenu.frozen) {
 			if (this.collide()) {
 				this.slideTimer++;
 				this.fall = false;
@@ -76,9 +76,9 @@ class tetrimino {
 		if (keyIsDown(DOWN_ARROW)) {
 			this.softDropTiles++;
 			if (this.softDropTiles < 20)
-				score++;
+				cMenu.score++;
 		}
-		if (!frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 1 : 30) == 0) {
+		if (!cMenu.frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 1 : 30) == 0) {
 			this.y++;
 		}
 		return true
@@ -93,9 +93,11 @@ class tetrimino {
 			for (let i = 0; i < this.size; i++) {
 				if (this.grid[j][i] != 0) {
 					if (out) {
-						rect(x + (i * tSize), y + (j * tSize), tSize, tSize);
+						rect(x + (i * cMenu.tSize), y + (j * cMenu.tSize),
+							cMenu.tSize, cMenu.tSize);
 					} else {
-						rect((this.x + i) * tSize + startX, (this.y + j) * tSize + startY, tSize, tSize);
+						rect((this.x + i) * cMenu.tSize + cMenu.startX, (this.y + j) * cMenu.tSize + cMenu.startY,
+							cMenu.tSize, cMenu.tSize);
 					}
 				}
 			}
@@ -113,7 +115,8 @@ class tetrimino {
 		for (let j = 0; j < this.size; j++) {
 			for (let i = 0; i < this.size; i++) {
 				if (this.grid[j][i] != 0) {
-					rect((this.x + i) * tSize + startX, (yOff + j) * tSize + startY, tSize, tSize);
+					rect((this.x + i) * cMenu.tSize + cMenu.startX, (yOff + j) * cMenu.tSize + cMenu.startY,
+						cMenu.tSize, cMenu.tSize);
 				}
 			}
 		}
@@ -138,7 +141,7 @@ class tetrimino {
 				let row = reverse ? row_.slice().reverse() : row_;
 				for (let g of row) {
 					if (g != 0) {
-						if (grid[this.y + y][this.x + x + inc] == 0) {
+						if (cMenu.grid[this.y + y][this.x + x + inc] == 0) {
 							break
 						} else {
 							return false
@@ -157,11 +160,11 @@ class tetrimino {
 		for (let j = 0; j < this.size; j++) {
 			for (let i = 0; i < this.size; i++) {
 				if (this.grid[j][i] != 0) {
-					grid[this.y + j][this.x + i] = this.type;
+					cMenu.grid[this.y + j][this.x + i] = this.type;
 				}
 			}
 		}
-		pieceDropped();
+		cMenu.pieceDropped();
 	}
 
 	collide(yOff = this.y) {
@@ -170,7 +173,7 @@ class tetrimino {
 			let x = 0;
 			for (let g of row) {
 				if (g != 0) {
-					if (yOff + y + 1 >= gHeight || grid[yOff + y + 1][this.x + x] != 0) {
+					if (yOff + y + 1 >= cMenu.gHeight || cMenu.grid[yOff + y + 1][this.x + x] != 0) {
 						return true
 					}
 				}
@@ -187,10 +190,10 @@ class tetrimino {
 		for (let y = 0; y < this.size; y++) {
 			for (let x = 0; x < this.size; x++) {
 				if (g[y][x] != 0) {
-					if (xOff + x < 0 || xOff + x > gWidth || yOff + y >= gHeight) {
+					if (xOff + x < 0 || xOff + x > cMenu.gWidth || yOff + y >= cMenu.gHeight) {
 						return true
 					}
-					if (grid[yOff + y][xOff + x] != 0) {
+					if (cMenu.grid[yOff + y][xOff + x] != 0) {
 						return true
 					}
 				}
@@ -276,7 +279,7 @@ class tetrimino {
 	}
 	harddrop(set = true) {
 		let tiles = 0;
-		for (let y = this.y; y <= gHeight; y++) {
+		for (let y = this.y; y <= cMenu.gHeight; y++) {
 			if (this.collide(y)) {
 				if (set) {
 					this.y = y;
@@ -286,7 +289,7 @@ class tetrimino {
 			}
 			if (set) {
 				if ((tiles/2) < 40) {
-					score += 2;
+					cMenu.score += 2;
 				}
 				tiles++;
 			}

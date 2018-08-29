@@ -1,4 +1,4 @@
-class menuObj {
+class menuObject {
 	constructor() {
 		// a button is a element that contains, area, callback, and text
 		// {pos : [x1,y1,x2,y2],callback = (), text = "something"}
@@ -15,7 +15,8 @@ class menuObj {
 			let area = button.pos;
 			rect(area[0],area[1],area[2]-area[0],area[3]-area[1]);
 			fill(this.textCol);
-			text(button.text,area[0],area[1]);
+			textAlign(CENTER, CENTER);
+			text(button.text,(area[2]-area[0])/2+area[0],(area[3]-area[1])/2+area[1]);
 		}
 	}
 
@@ -31,6 +32,10 @@ class menuObj {
 				button.callback();
 			}
 		}
+	}
+
+	keyPressed() {
+		// add
 	}
 
 }
