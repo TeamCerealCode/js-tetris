@@ -42,11 +42,11 @@ class tetrimino {
 		} else {
 			this.justSpawned = false;
 		}
-		if (keyIsDown(LEFT_ARROW))
+		if (keyIsDown(cMenu.keys["left"]))
 			this.dasLeft++;
 		else
 			this.dasLeft = 0
-		if (keyIsDown(RIGHT_ARROW))
+		if (keyIsDown(cMenu.keys["right"]))
 			this.dasRight++;
 		else
 			this.dasRight = 0
@@ -57,8 +57,8 @@ class tetrimino {
 			for (let i = 0; i < this.dasTimer; i++)
 				this.move();
 		}
-		if (cMenu.upArrow) {
-			cMenu.upArrow = false;
+		if (cMenu.harddrop) {
+			cMenu.harddrop = false;
 			return !this.harddrop();
 		}
 		if (!cMenu.frozen) {
@@ -73,12 +73,12 @@ class tetrimino {
 				return false
 			}
 		}
-		if (keyIsDown(DOWN_ARROW)) {
+		if (keyIsDown(cMenu.keys["down"])) {
 			this.softDropTiles++;
 			if (this.softDropTiles < 20)
 				cMenu.score++;
 		}
-		if (!cMenu.frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(DOWN_ARROW) ? 1 : 30) == 0) {
+		if (!cMenu.frozen && this.fall && frameCount != 0 && frameCount % (keyIsDown(cMenu.keys["down"]) ? 1 : 30) == 0) {
 			this.y++;
 		}
 		return true
@@ -128,13 +128,13 @@ class tetrimino {
 		var reverse = false;
 		var inc = -1;
 		var sX = 0;
-		if (keyIsDown(RIGHT_ARROW)) {
+		if (keyIsDown(cMenu.keys["right"])) {
 			reverse = true;
 			inc = 1;
 			sX = this.size - 1;
 		}
 
-		if (keyIsDown(LEFT_ARROW) || keyIsDown(RIGHT_ARROW)) {
+		if (keyIsDown(cMenu.keys["left"]) || keyIsDown(cMenu.keys["right"])) {
 			let y = 0;
 			for (let row_ of this.grid) {
 				let x = sX;

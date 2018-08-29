@@ -1,4 +1,4 @@
-var cMenu = titleMenu; //current menu
+var cMenu = board; //current menu
 
 function setup() {
 	createCanvas(500, 500);

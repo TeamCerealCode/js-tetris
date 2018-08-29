@@ -10,6 +10,7 @@ class menuObject {
 
 	draw() {
 		for (let button of this.buttons) {
+			strokeWeight(2);
 			stroke(this.outline);
 			fill(this.fill);
 			let area = button.pos;

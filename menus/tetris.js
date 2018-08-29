@@ -3,6 +3,19 @@ class board extends menuObject {
 		super();
 		this.block;
 
+		this.keys = {
+			"up" : 38,
+			"down" : 40,
+			"left" : 37,
+			"right" : 39,
+			"rotCW" : 88,
+			"rotCCW" : 90,
+			"hold" : 32,
+			"harddrop" : 38,
+			"debug1" : 188,
+			"debug2" : 190
+		}
+
 		this.gWidth = 10; // grid width
 		this.gHeight = 22; // grid height
 		this.tSize = 20; // tile size
@@ -18,13 +31,22 @@ class board extends menuObject {
 		this.hold = 0;
 		this.upcoming = [];
 		this.bag = [];
+		this.harddrop = false;
 		this.debugMode = false;
 		this.frozen = this.debugMode;
 		this.debugColor = 8;
-		this.upArrow = false;
 		this.hasHeld = false;
 		this.lost = false;
 
+		this.newGrid();
+
+		this.newBag();
+		for (let i = 0; i < 5; i++)
+			this.newUpcoming();
+		this.newPiece();
+	}
+
+	newGrid() {
 		this.grid = [];
 		for (let j = 0; j < this.gHeight; j++) {
 			var row = [];
@@ -33,10 +55,6 @@ class board extends menuObject {
 			}
 			this.grid.push(row);
 		}
-		this.newBag();
-		for (let i = 0; i < 5; i++)
-			this.newUpcoming();
-		this.newPiece();
 	}
 
 	shuffleArray(array) {
@@ -81,6 +99,7 @@ class board extends menuObject {
 
 	draw() {
 		background(0);
+		strokeWeight(1);
 		this.drawGrid();
 
 		this.block.draw();
@@ -99,17 +118,17 @@ class board extends menuObject {
 	}
 
 	keyPressed() {
-		if (keyCode == 188)
+		if (keyCode == this.keys["debug1"])
 			this.debugMode = !this.debugMode;
-		if (keyCode == 190)
+		if (keyCode == this.keys["debug2"])
 			this.frozen = !this.frozen;
-		if (keyCode == UP_ARROW)
-			this.upArrow = true;
-		if (keyCode == 88)
+		if (keyCode == this.keys["harddrop"])
+			this.harddrop = true;
+		if (keyCode == this.keys["rotCW"])
 			this.block.rotate();
-		if (keyCode == 90)
+		if (keyCode == this.keys["rotCCW"])
 			this.block.rotate(false);
-		if (keyCode == 32) {
+		if (keyCode == this.keys["hold"]) {
 			if (!this.hasHeld) {
 				var t = this.block.type
 				this.newPiece(true);
